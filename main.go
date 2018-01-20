@@ -2,17 +2,17 @@ package main
 
 import (
 	"fmt"
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"io"
 	"net/http"
 	"os"
-	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go/aws"
-    "github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
 func panicIfErr(err error) {
-	if(err != nil){
+	if err != nil {
 		panic(err)
 	}
 }
@@ -32,7 +32,7 @@ func handler() {
 	panicIfErr(err)
 
 	targetMinSizeMB := int64(250)
-	oneMB := int64(1024*1024)
+	oneMB := int64(1024 * 1024)
 	if size/oneMB < targetMinSizeMB {
 		fmt.Printf("File not large enough (only %v bytes); something went wrong. Quitting...\n", size)
 	} else {
@@ -41,7 +41,7 @@ func handler() {
 			Region: aws.String("us-east-1")},
 		)
 		panicIfErr(err)
-	
+
 		uploader := s3manager.NewUploader(sess)
 		bucket := "scrubbedconsumercomplaints"
 		filename := "complaints.csv"
@@ -49,11 +49,11 @@ func handler() {
 
 		_, err = uploader.Upload(&s3manager.UploadInput{
 			Bucket: aws.String(bucket),
-			Key: aws.String(filename),
-			Body: file,
+			Key:    aws.String(filename),
+			Body:   file,
 		})
 		panicIfErr(err)
-		
+
 		fmt.Printf("Successfully uploaded %q to %q\n", filename, bucket)
 	}
 }
@@ -65,6 +65,6 @@ func main() {
 		lambda.Start(handler)
 	} else {
 		fmt.Println("Running locally...")
-		handler() 
+		handler()
 	}
 }
