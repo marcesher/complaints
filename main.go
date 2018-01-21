@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"net/http"
+	"os"
+
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
-	"io"
-	"net/http"
-	"os"
 )
 
 func panicIfErr(err error) {
